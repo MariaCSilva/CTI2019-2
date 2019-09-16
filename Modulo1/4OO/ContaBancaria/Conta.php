@@ -5,29 +5,21 @@ class Conta implements IConta
 {
     public $numero;
     private $saldo;
-
     public $cliente;
-
-    public function Conta($numero, $cliente, $saldo)
-    {
+    public function Conta($numero, $cliente, $saldo){
         $this->numero = $numero;
         $this->cliente = $cliente;
         $this->saldo = $saldo;
     }
-
-
-    public function getSaldo()
-    {
+    public function getSaldo(){
         return $this->saldo;
     }
 
-    public function exibirSaldo()
-    {
+    public function exibirSaldo(){
         echo $this->getSaldo();
     }
 
-    public function depositar($valor)
-    {
+    public function depositar($valor){
         $sucesso = false;
         if ($valor >= 0) {
             $this->saldo += $valor;
@@ -35,8 +27,7 @@ class Conta implements IConta
         }
         return $sucesso;
     }
-    public function sacar($valor)
-    {
+    public function sacar($valor){
         $sucesso = false;
         if ($this->saldo >= $valor) {
             $this->saldo -= $valor;
@@ -44,8 +35,8 @@ class Conta implements IConta
         }
         return $sucesso;
     }
-    public function transferir($valor, $outraConta)
-    {
+
+    public function transferir($valor, $outraConta){
         $sucesso = false;
         if ($this->sacar($valor)) {
             $sucesso = $outraConta->depositar($valor);
