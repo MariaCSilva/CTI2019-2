@@ -59,7 +59,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <form action="conta1.php" method="get">
                     <fieldset>
                         <legend>Depósito Conta</legend>
@@ -74,7 +74,7 @@
                     </fieldset>
                 </form>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <form action="conta1.php" method="get">
                     <fieldset>
                         <legend>Saque Conta</legend>
@@ -89,6 +89,33 @@
                     </fieldset>
                 </form>
             </div>
+            <div class="col-sm-6">
+
+                <form action="conta1.php" method="get">
+                    <fieldset>
+                        <legend>Tranferência Conta</legend>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                            <div class="form-group">
+                            <label>Numero da Conta: </label>
+                            <input type="text" name="traNumConta" class="form-control">
+                        </div>
+                        
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="form-group">
+                            <label>Valor: </label>
+                            <input type="text" name="traValor" class="form-control">
+                        </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary form-control">Transferir</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
 
     </div>
@@ -98,17 +125,37 @@
 
 <?php
 
-
+//Depósito
 if (isset($_GET["depValor"])) {
     if (!empty($_GET["depValor"])) {
         $conta1->depositar($_GET["depValor"]);
         setcookie("saldoConta1", $conta1->getSaldo());
     }
 }
+
+//Saque
 if (isset($_GET["saqValor"])) {
     if (!empty($_GET["saqValor"])) {
         $conta1->sacar($_GET["saqValor"]);
         setcookie("saldoConta1", $conta1->getSaldo());
+    }
+}
+//Transferência
+if (isset($_GET["traValor"]) && isset($_GET["traNumConta"])) {
+    if (!empty($_GET["traValor"]) && !empty($_GET["traNumConta"])) {
+        if (!isset($_COOKIE["numeroConta2"])) {
+           echo "Conta não existe";
+        } else {
+            $conta2 = new Conta($_COOKIE["numeroConta2"], $_COOKIE["nomeClienteConta2"], $_COOKIE["saldoConta2"]);
+
+            if ($conta2->numero == $_GET["traNumConta"]) {                       
+                $conta1->transferir($_GET["traValor"], $conta2);
+                setcookie("saldoConta1", $conta1->getSaldo());
+                setcookie("saldoConta2", $conta2->getSaldo());
+            }
+
+        }
+        
     }
 }
 
