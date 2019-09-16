@@ -85,9 +85,9 @@
 <?php
 
 
-if (isset($_GET["depValor1"])) {
-    if (!empty($_GET["depValor1"])) {
-        $conta1->depositar($_GET["depValor1"]);
+if (isset($_GET["depValor"])) {
+    if (!empty($_GET["depValor"])) {
+        $conta1->depositar($_GET["depValor"]);
         setcookie("saldoConta1", $conta1->getSaldo());
     }
 }
