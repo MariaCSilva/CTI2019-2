@@ -59,7 +59,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <form action="conta1.php" method="get">
                     <fieldset>
                         <legend>Depósito Conta</legend>
@@ -73,7 +73,21 @@
                         </div>
                     </fieldset>
                 </form>
+            </div>
+            <div class="col-sm-4">
+                <form action="conta1.php" method="get">
+                    <fieldset>
+                        <legend>Saque Conta</legend>
 
+                        <div class="form-group">
+                            <label>Valor: </label>
+                            <input type="text" name="saqValor" class="form-control">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary form-control">Sacar</button>
+                        </div>
+                    </fieldset>
+                </form>
             </div>
         </div>
 
@@ -91,7 +105,12 @@ if (isset($_GET["depValor"])) {
         setcookie("saldoConta1", $conta1->getSaldo());
     }
 }
-
+if (isset($_GET["saqValor"])) {
+    if (!empty($_GET["saqValor"])) {
+        $conta1->sacar($_GET["saqValor"]);
+        setcookie("saldoConta1", $conta1->getSaldo());
+    }
+}
 
 
 ?>
