@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Transações da Conta 1</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 </head>
 
@@ -17,14 +18,14 @@
     $conta1 = null;
     $conta2 = null;
     //Se a conta não existe cria se uma nova Instancia de conta e adiciona no cookie
-    if (!isset($_COOKIE["numeroConta1"])) {
+    if (!isset($_COOKIE["numConta1"])) {
         $conta1 = new Conta("2121", "Majo",  0);
-        setcookie("numeroConta1", $conta1->numero);
-        setcookie("nomeClienteConta1", $conta1->cliente);
-        setcookie("saldoConta1", $conta1->getSaldo());
+        setcookie("numConta1", $conta1->numero);
+        setcookie("clienteConta1", $conta1->cliente);
+        setcookie("saldo1", $conta1->getSaldo());
     } else {
         //Se a conta já existe cria uma nova conta a partir do cookie
-        $conta1 = new Conta($_COOKIE["numeroConta1"], $_COOKIE["nomeClienteConta1"], $_COOKIE["saldoConta1"]);
+        $conta1 = new Conta($_COOKIE["numConta1"], $_COOKIE["clienteConta1"], $_COOKIE["saldo1"]);
     }
 
     ?>
@@ -97,17 +98,17 @@
 
                         <div class="row">
                             <div class="col-sm-6">
-                            <div class="form-group">
-                            <label>Numero da Conta: </label>
-                            <input type="text" name="traNumConta" class="form-control">
-                        </div>
-                        
+                                <div class="form-group">
+                                    <label>Numero da Conta: </label>
+                                    <input type="text" name="traNumConta" class="form-control">
+                                </div>
+
                             </div>
                             <div class="col-sm-6">
-                            <div class="form-group">
-                            <label>Valor: </label>
-                            <input type="text" name="traValor" class="form-control">
-                        </div>
+                                <div class="form-group">
+                                    <label>Valor: </label>
+                                    <input type="text" name="traValor" class="form-control">
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -117,8 +118,9 @@
                 </form>
             </div>
         </div>
-
     </div>
+
+
 </body>
 
 </html>
@@ -128,36 +130,47 @@
 //Depósito
 if (isset($_GET["depValor"])) {
     if (!empty($_GET["depValor"])) {
-        $conta1->depositar($_GET["depValor"]);
-        setcookie("saldoConta1", $conta1->getSaldo());
+        if ($conta1->depositar($_GET["depValor"])) {
+            setcookie("saldo1", $conta1->getSaldo());
+            echo "<script>alert('Deposito realizado com sucesso')</script>";
+        } else {
+
+            echo "<script>alert('Deposito não realizado')</script>";
+        }
     }
 }
 
 //Saque
 if (isset($_GET["saqValor"])) {
     if (!empty($_GET["saqValor"])) {
-        $conta1->sacar($_GET["saqValor"]);
-        setcookie("saldoConta1", $conta1->getSaldo());
+        if ($conta1->sacar($_GET["saqValor"]))
+            setcookie("saldo1", $conta1->getSaldo());
+            echo "<script>alert('Saque realizado com sucesso')</script>";
+    }else{
+        echo "<script>alert('Saldo insuficiente')</script>";
     }
 }
 //Transferência
 if (isset($_GET["traValor"]) && isset($_GET["traNumConta"])) {
     if (!empty($_GET["traValor"]) && !empty($_GET["traNumConta"])) {
         if (!isset($_COOKIE["numeroConta2"])) {
-           echo "Conta não existe";
+            echo "<script>alert('Conta inexistente')</script>";
         } else {
             $conta2 = new Conta($_COOKIE["numeroConta2"], $_COOKIE["nomeClienteConta2"], $_COOKIE["saldoConta2"]);
+            
+            if ($conta2->numero == $_GET["traNumConta"]) {
+                if($conta1->transferir($_GET["traValor"], $conta2)){
+                    
+                    setcookie("saldo1", $conta1->getSaldo());
+                    setcookie("saldoConta2", $conta2->getSaldo());
+                    echo "<script>alert('Transferência Realizada com Sucesso!')</script>";
+                }else{
+                    echo "<script>alert('Transferência Não realizada')</script>";
 
-            if ($conta2->numero == $_GET["traNumConta"]) {                       
-                $conta1->transferir($_GET["traValor"], $conta2);
-                setcookie("saldoConta1", $conta1->getSaldo());
-                setcookie("saldoConta2", $conta2->getSaldo());
+                }
             }
-
         }
-        
     }
 }
-
 
 ?>
